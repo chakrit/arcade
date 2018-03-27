@@ -1,15 +1,14 @@
 package main
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
 var RootCmd = &cobra.Command{
-	Use: "arcade",
+	Use:   "arcade",
 	Short: "Starts the arcade simulation.",
-	RunE: runRootCmd,
 }
 
-func runRootCmd(cmd *cobra.Command, args []string) error {
-	return nil
+func init() {
+	RootCmd.AddCommand(PingCmd)
 }
-
-

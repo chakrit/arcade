@@ -1,9 +1,10 @@
 package main
 
-import (
-	"fmt"
-)
+import "log"
 
 func main() {
-	fmt.Println("Hello, World!")
+	defer log.Println("stopped")
+	if err := RootCmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
