@@ -9,8 +9,16 @@ It is generated from these files:
 
 It has these top-level messages:
 	PingPong
+	Player
+	GameState
 	DescribeRequest
 	DescribeResponse
+	StartRequest
+	StartResponse
+	StepRequest
+	StepResponse
+	UpdateRequest
+	UpdateResponse
 */
 package arcade
 
@@ -37,32 +45,115 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 type NodeType int32
 
 const (
-	NodeType_RESERVED NodeType = 0
-	NodeType_DUMMY    NodeType = 1
-	NodeType_GAME     NodeType = 2
-	NodeType_PLAYER   NodeType = 3
-	NodeType_DISPLAY  NodeType = 4
+	NodeType_UNKNOWN_NODE NodeType = 0
+	NodeType_DUMMY_NODE   NodeType = 1
+	NodeType_GAME_NODE    NodeType = 2
+	NodeType_PLAYER_NODE  NodeType = 3
+	NodeType_DISPLAY_NODE NodeType = 4
 )
 
 var NodeType_name = map[int32]string{
-	0: "RESERVED",
-	1: "DUMMY",
-	2: "GAME",
-	3: "PLAYER",
-	4: "DISPLAY",
+	0: "UNKNOWN_NODE",
+	1: "DUMMY_NODE",
+	2: "GAME_NODE",
+	3: "PLAYER_NODE",
+	4: "DISPLAY_NODE",
 }
 var NodeType_value = map[string]int32{
-	"RESERVED": 0,
-	"DUMMY":    1,
-	"GAME":     2,
-	"PLAYER":   3,
-	"DISPLAY":  4,
+	"UNKNOWN_NODE": 0,
+	"DUMMY_NODE":   1,
+	"GAME_NODE":    2,
+	"PLAYER_NODE":  3,
+	"DISPLAY_NODE": 4,
 }
 
 func (x NodeType) String() string {
 	return proto.EnumName(NodeType_name, int32(x))
 }
 func (NodeType) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+type Button int32
+
+const (
+	Button_UNKNOWN_BUTTON Button = 0
+	Button_NOTHING_BUTTON Button = 1
+	Button_UP_BUTTON      Button = 2
+	Button_DOWN_BUTTON    Button = 3
+	Button_LEFT_BUTTON    Button = 4
+	Button_RIGHT_BUTTON   Button = 5
+	Button_A_BUTTON       Button = 6
+	Button_B_BUTTON       Button = 7
+)
+
+var Button_name = map[int32]string{
+	0: "UNKNOWN_BUTTON",
+	1: "NOTHING_BUTTON",
+	2: "UP_BUTTON",
+	3: "DOWN_BUTTON",
+	4: "LEFT_BUTTON",
+	5: "RIGHT_BUTTON",
+	6: "A_BUTTON",
+	7: "B_BUTTON",
+}
+var Button_value = map[string]int32{
+	"UNKNOWN_BUTTON": 0,
+	"NOTHING_BUTTON": 1,
+	"UP_BUTTON":      2,
+	"DOWN_BUTTON":    3,
+	"LEFT_BUTTON":    4,
+	"RIGHT_BUTTON":   5,
+	"A_BUTTON":       6,
+	"B_BUTTON":       7,
+}
+
+func (x Button) String() string {
+	return proto.EnumName(Button_name, int32(x))
+}
+func (Button) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
+type Tile int32
+
+const (
+	Tile_UNKNOWN_TILE Tile = 0
+	// standard for all games
+	Tile_EMPTY_SPACE_TILE Tile = 1
+	Tile_WALL_TILE        Tile = 2
+	Tile_PLAYER_TILE      Tile = 3
+	// game-specific definitions
+	Tile_ALPHA_TILE   Tile = 4
+	Tile_BETA_TILE    Tile = 5
+	Tile_GAMMA_TILE   Tile = 6
+	Tile_DELTA_TILE   Tile = 7
+	Tile_EPSILON_TILE Tile = 8
+)
+
+var Tile_name = map[int32]string{
+	0: "UNKNOWN_TILE",
+	1: "EMPTY_SPACE_TILE",
+	2: "WALL_TILE",
+	3: "PLAYER_TILE",
+	4: "ALPHA_TILE",
+	5: "BETA_TILE",
+	6: "GAMMA_TILE",
+	7: "DELTA_TILE",
+	8: "EPSILON_TILE",
+}
+var Tile_value = map[string]int32{
+	"UNKNOWN_TILE":     0,
+	"EMPTY_SPACE_TILE": 1,
+	"WALL_TILE":        2,
+	"PLAYER_TILE":      3,
+	"ALPHA_TILE":       4,
+	"BETA_TILE":        5,
+	"GAMMA_TILE":       6,
+	"DELTA_TILE":       7,
+	"EPSILON_TILE":     8,
+}
+
+func (x Tile) String() string {
+	return proto.EnumName(Tile_name, int32(x))
+}
+func (Tile) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
 type PingPong struct {
 	SequenceNumber int32 `protobuf:"varint,1,opt,name=sequence_number,json=sequenceNumber" json:"sequence_number,omitempty"`
@@ -80,6 +171,62 @@ func (m *PingPong) GetSequenceNumber() int32 {
 	return 0
 }
 
+type Player struct {
+	Identifier string `protobuf:"bytes,1,opt,name=identifier" json:"identifier,omitempty"`
+}
+
+func (m *Player) Reset()                    { *m = Player{} }
+func (m *Player) String() string            { return proto.CompactTextString(m) }
+func (*Player) ProtoMessage()               {}
+func (*Player) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
+func (m *Player) GetIdentifier() string {
+	if m != nil {
+		return m.Identifier
+	}
+	return ""
+}
+
+type GameState struct {
+	FrameNumber int64            `protobuf:"varint,1,opt,name=frame_number,json=frameNumber" json:"frame_number,omitempty"`
+	Rows        []*GameState_Row `protobuf:"bytes,2,rep,name=rows" json:"rows,omitempty"`
+}
+
+func (m *GameState) Reset()                    { *m = GameState{} }
+func (m *GameState) String() string            { return proto.CompactTextString(m) }
+func (*GameState) ProtoMessage()               {}
+func (*GameState) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+
+func (m *GameState) GetFrameNumber() int64 {
+	if m != nil {
+		return m.FrameNumber
+	}
+	return 0
+}
+
+func (m *GameState) GetRows() []*GameState_Row {
+	if m != nil {
+		return m.Rows
+	}
+	return nil
+}
+
+type GameState_Row struct {
+	Cells []Tile `protobuf:"varint,1,rep,packed,name=cells,enum=arcade.Tile" json:"cells,omitempty"`
+}
+
+func (m *GameState_Row) Reset()                    { *m = GameState_Row{} }
+func (m *GameState_Row) String() string            { return proto.CompactTextString(m) }
+func (*GameState_Row) ProtoMessage()               {}
+func (*GameState_Row) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 0} }
+
+func (m *GameState_Row) GetCells() []Tile {
+	if m != nil {
+		return m.Cells
+	}
+	return nil
+}
+
 type DescribeRequest struct {
 	Identifier string `protobuf:"bytes,1,opt,name=identifier" json:"identifier,omitempty"`
 }
@@ -87,7 +234,7 @@ type DescribeRequest struct {
 func (m *DescribeRequest) Reset()                    { *m = DescribeRequest{} }
 func (m *DescribeRequest) String() string            { return proto.CompactTextString(m) }
 func (*DescribeRequest) ProtoMessage()               {}
-func (*DescribeRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (*DescribeRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
 
 func (m *DescribeRequest) GetIdentifier() string {
 	if m != nil {
@@ -104,7 +251,7 @@ type DescribeResponse struct {
 func (m *DescribeResponse) Reset()                    { *m = DescribeResponse{} }
 func (m *DescribeResponse) String() string            { return proto.CompactTextString(m) }
 func (*DescribeResponse) ProtoMessage()               {}
-func (*DescribeResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*DescribeResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
 
 func (m *DescribeResponse) GetIdentifier() string {
 	if m != nil {
@@ -117,14 +264,170 @@ func (m *DescribeResponse) GetType() NodeType {
 	if m != nil {
 		return m.Type
 	}
-	return NodeType_RESERVED
+	return NodeType_UNKNOWN_NODE
+}
+
+type StartRequest struct {
+	Players []*Player `protobuf:"bytes,1,rep,name=players" json:"players,omitempty"`
+}
+
+func (m *StartRequest) Reset()                    { *m = StartRequest{} }
+func (m *StartRequest) String() string            { return proto.CompactTextString(m) }
+func (*StartRequest) ProtoMessage()               {}
+func (*StartRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+
+func (m *StartRequest) GetPlayers() []*Player {
+	if m != nil {
+		return m.Players
+	}
+	return nil
+}
+
+type StartResponse struct {
+	InitialState *GameState `protobuf:"bytes,1,opt,name=initial_state,json=initialState" json:"initial_state,omitempty"`
+}
+
+func (m *StartResponse) Reset()                    { *m = StartResponse{} }
+func (m *StartResponse) String() string            { return proto.CompactTextString(m) }
+func (*StartResponse) ProtoMessage()               {}
+func (*StartResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+func (m *StartResponse) GetInitialState() *GameState {
+	if m != nil {
+		return m.InitialState
+	}
+	return nil
+}
+
+type StepRequest struct {
+	Inputs []*StepRequest_Input `protobuf:"bytes,1,rep,name=inputs" json:"inputs,omitempty"`
+}
+
+func (m *StepRequest) Reset()                    { *m = StepRequest{} }
+func (m *StepRequest) String() string            { return proto.CompactTextString(m) }
+func (*StepRequest) ProtoMessage()               {}
+func (*StepRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+
+func (m *StepRequest) GetInputs() []*StepRequest_Input {
+	if m != nil {
+		return m.Inputs
+	}
+	return nil
+}
+
+type StepRequest_Input struct {
+	Identifier    string `protobuf:"bytes,1,opt,name=identifier" json:"identifier,omitempty"`
+	ButtonPressed Button `protobuf:"varint,2,opt,name=button_pressed,json=buttonPressed,enum=arcade.Button" json:"button_pressed,omitempty"`
+}
+
+func (m *StepRequest_Input) Reset()                    { *m = StepRequest_Input{} }
+func (m *StepRequest_Input) String() string            { return proto.CompactTextString(m) }
+func (*StepRequest_Input) ProtoMessage()               {}
+func (*StepRequest_Input) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7, 0} }
+
+func (m *StepRequest_Input) GetIdentifier() string {
+	if m != nil {
+		return m.Identifier
+	}
+	return ""
+}
+
+func (m *StepRequest_Input) GetButtonPressed() Button {
+	if m != nil {
+		return m.ButtonPressed
+	}
+	return Button_UNKNOWN_BUTTON
+}
+
+type StepResponse struct {
+	PreviousState    *GameState `protobuf:"bytes,1,opt,name=previous_state,json=previousState" json:"previous_state,omitempty"`
+	CurrentState     *GameState `protobuf:"bytes,2,opt,name=current_state,json=currentState" json:"current_state,omitempty"`
+	GameIsOver       bool       `protobuf:"varint,3,opt,name=game_is_over,json=gameIsOver" json:"game_is_over,omitempty"`
+	WinnerIdentifier string     `protobuf:"bytes,4,opt,name=winner_identifier,json=winnerIdentifier" json:"winner_identifier,omitempty"`
+}
+
+func (m *StepResponse) Reset()                    { *m = StepResponse{} }
+func (m *StepResponse) String() string            { return proto.CompactTextString(m) }
+func (*StepResponse) ProtoMessage()               {}
+func (*StepResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+
+func (m *StepResponse) GetPreviousState() *GameState {
+	if m != nil {
+		return m.PreviousState
+	}
+	return nil
+}
+
+func (m *StepResponse) GetCurrentState() *GameState {
+	if m != nil {
+		return m.CurrentState
+	}
+	return nil
+}
+
+func (m *StepResponse) GetGameIsOver() bool {
+	if m != nil {
+		return m.GameIsOver
+	}
+	return false
+}
+
+func (m *StepResponse) GetWinnerIdentifier() string {
+	if m != nil {
+		return m.WinnerIdentifier
+	}
+	return ""
+}
+
+type UpdateRequest struct {
+	CurrentState *GameState `protobuf:"bytes,1,opt,name=current_state,json=currentState" json:"current_state,omitempty"`
+}
+
+func (m *UpdateRequest) Reset()                    { *m = UpdateRequest{} }
+func (m *UpdateRequest) String() string            { return proto.CompactTextString(m) }
+func (*UpdateRequest) ProtoMessage()               {}
+func (*UpdateRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+
+func (m *UpdateRequest) GetCurrentState() *GameState {
+	if m != nil {
+		return m.CurrentState
+	}
+	return nil
+}
+
+type UpdateResponse struct {
+	ButtonPressed Button `protobuf:"varint,1,opt,name=button_pressed,json=buttonPressed,enum=arcade.Button" json:"button_pressed,omitempty"`
+}
+
+func (m *UpdateResponse) Reset()                    { *m = UpdateResponse{} }
+func (m *UpdateResponse) String() string            { return proto.CompactTextString(m) }
+func (*UpdateResponse) ProtoMessage()               {}
+func (*UpdateResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+
+func (m *UpdateResponse) GetButtonPressed() Button {
+	if m != nil {
+		return m.ButtonPressed
+	}
+	return Button_UNKNOWN_BUTTON
 }
 
 func init() {
 	proto.RegisterType((*PingPong)(nil), "arcade.PingPong")
+	proto.RegisterType((*Player)(nil), "arcade.Player")
+	proto.RegisterType((*GameState)(nil), "arcade.GameState")
+	proto.RegisterType((*GameState_Row)(nil), "arcade.GameState.Row")
 	proto.RegisterType((*DescribeRequest)(nil), "arcade.DescribeRequest")
 	proto.RegisterType((*DescribeResponse)(nil), "arcade.DescribeResponse")
+	proto.RegisterType((*StartRequest)(nil), "arcade.StartRequest")
+	proto.RegisterType((*StartResponse)(nil), "arcade.StartResponse")
+	proto.RegisterType((*StepRequest)(nil), "arcade.StepRequest")
+	proto.RegisterType((*StepRequest_Input)(nil), "arcade.StepRequest.Input")
+	proto.RegisterType((*StepResponse)(nil), "arcade.StepResponse")
+	proto.RegisterType((*UpdateRequest)(nil), "arcade.UpdateRequest")
+	proto.RegisterType((*UpdateResponse)(nil), "arcade.UpdateResponse")
 	proto.RegisterEnum("arcade.NodeType", NodeType_name, NodeType_value)
+	proto.RegisterEnum("arcade.Button", Button_name, Button_value)
+	proto.RegisterEnum("arcade.Tile", Tile_name, Tile_value)
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -232,26 +535,254 @@ var _NodeService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "arcade.proto",
 }
 
+// Client API for GameService service
+
+type GameServiceClient interface {
+	Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*StartResponse, error)
+	Step(ctx context.Context, in *StepRequest, opts ...grpc.CallOption) (*StepResponse, error)
+}
+
+type gameServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewGameServiceClient(cc *grpc.ClientConn) GameServiceClient {
+	return &gameServiceClient{cc}
+}
+
+func (c *gameServiceClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*StartResponse, error) {
+	out := new(StartResponse)
+	err := grpc.Invoke(ctx, "/arcade.GameService/Start", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gameServiceClient) Step(ctx context.Context, in *StepRequest, opts ...grpc.CallOption) (*StepResponse, error) {
+	out := new(StepResponse)
+	err := grpc.Invoke(ctx, "/arcade.GameService/Step", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for GameService service
+
+type GameServiceServer interface {
+	Start(context.Context, *StartRequest) (*StartResponse, error)
+	Step(context.Context, *StepRequest) (*StepResponse, error)
+}
+
+func RegisterGameServiceServer(s *grpc.Server, srv GameServiceServer) {
+	s.RegisterService(&_GameService_serviceDesc, srv)
+}
+
+func _GameService_Start_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).Start(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/arcade.GameService/Start",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).Start(ctx, req.(*StartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GameService_Step_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StepRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).Step(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/arcade.GameService/Step",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).Step(ctx, req.(*StepRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _GameService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "arcade.GameService",
+	HandlerType: (*GameServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Start",
+			Handler:    _GameService_Start_Handler,
+		},
+		{
+			MethodName: "Step",
+			Handler:    _GameService_Step_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "arcade.proto",
+}
+
+// Client API for PlayerService service
+
+type PlayerServiceClient interface {
+	Prepare(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+}
+
+type playerServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewPlayerServiceClient(cc *grpc.ClientConn) PlayerServiceClient {
+	return &playerServiceClient{cc}
+}
+
+func (c *playerServiceClient) Prepare(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
+	err := grpc.Invoke(ctx, "/arcade.PlayerService/Prepare", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *playerServiceClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
+	err := grpc.Invoke(ctx, "/arcade.PlayerService/Update", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for PlayerService service
+
+type PlayerServiceServer interface {
+	Prepare(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
+}
+
+func RegisterPlayerServiceServer(s *grpc.Server, srv PlayerServiceServer) {
+	s.RegisterService(&_PlayerService_serviceDesc, srv)
+}
+
+func _PlayerService_Prepare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayerServiceServer).Prepare(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/arcade.PlayerService/Prepare",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayerServiceServer).Prepare(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PlayerService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayerServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/arcade.PlayerService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayerServiceServer).Update(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _PlayerService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "arcade.PlayerService",
+	HandlerType: (*PlayerServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Prepare",
+			Handler:    _PlayerService_Prepare_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _PlayerService_Update_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "arcade.proto",
+}
+
 func init() { proto.RegisterFile("arcade.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 278 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0xc1, 0x4a, 0xc3, 0x40,
-	0x10, 0x86, 0x93, 0x9a, 0xc6, 0x74, 0x5a, 0xda, 0x65, 0x2e, 0x86, 0x1e, 0xa4, 0x04, 0xc1, 0x22,
-	0x52, 0xb0, 0x7d, 0x00, 0x29, 0x24, 0x8a, 0x60, 0x4a, 0xd8, 0xa8, 0xd8, 0x93, 0x34, 0xc9, 0x58,
-	0xf6, 0xe0, 0x26, 0x66, 0x53, 0xa1, 0xe0, 0xc3, 0x4b, 0xd2, 0xae, 0x8a, 0x3d, 0x78, 0x9c, 0xef,
-	0xe7, 0xdf, 0x65, 0xbe, 0x81, 0xde, 0xaa, 0x4c, 0x57, 0x19, 0x4d, 0x8a, 0x32, 0xaf, 0x72, 0xb4,
-	0x77, 0x93, 0x37, 0x03, 0x27, 0x12, 0x72, 0x1d, 0xe5, 0x72, 0x8d, 0xe7, 0x30, 0x50, 0xf4, 0xbe,
-	0x21, 0x99, 0xd2, 0x8b, 0xdc, 0xbc, 0x25, 0x54, 0xba, 0xe6, 0xc8, 0x1c, 0xb7, 0x79, 0x5f, 0xe3,
-	0x45, 0x43, 0xbd, 0x2b, 0x18, 0xf8, 0xa4, 0xd2, 0x52, 0x24, 0xc4, 0xeb, 0x44, 0x55, 0x78, 0x0a,
-	0x20, 0x32, 0x92, 0x95, 0x78, 0x15, 0xfb, 0x5a, 0x87, 0xff, 0x22, 0xde, 0x33, 0xb0, 0x9f, 0x8a,
-	0x2a, 0x72, 0xa9, 0xe8, 0xbf, 0x0e, 0x9e, 0x81, 0x55, 0x6d, 0x0b, 0x72, 0x5b, 0x23, 0x73, 0xdc,
-	0x9f, 0xb2, 0xc9, 0x7e, 0x81, 0x45, 0x9e, 0xd1, 0xc3, 0xb6, 0x20, 0xde, 0xa4, 0x17, 0x37, 0xe0,
-	0x68, 0x82, 0x3d, 0x70, 0x78, 0x10, 0x07, 0xfc, 0x29, 0xf0, 0x99, 0x81, 0x1d, 0x68, 0xfb, 0x8f,
-	0x61, 0xb8, 0x64, 0x26, 0x3a, 0x60, 0xdd, 0xce, 0xc3, 0x80, 0xb5, 0x10, 0xc0, 0x8e, 0xee, 0xe7,
-	0xcb, 0x80, 0xb3, 0x23, 0xec, 0xc2, 0xb1, 0x7f, 0x17, 0xd7, 0x23, 0xb3, 0xa6, 0x9f, 0xd0, 0xad,
-	0xdf, 0x89, 0xa9, 0xfc, 0x10, 0x29, 0xe1, 0x25, 0x58, 0xb5, 0x18, 0xfc, 0xfe, 0x56, 0x6b, 0x1a,
-	0x1e, 0x10, 0xcf, 0xc0, 0x6b, 0x70, 0xf4, 0x7a, 0x78, 0xa2, 0xf3, 0x3f, 0x8e, 0x86, 0xee, 0x61,
-	0xb0, 0x33, 0xe1, 0x19, 0x89, 0xdd, 0x9c, 0x65, 0xf6, 0x15, 0x00, 0x00, 0xff, 0xff, 0xfc, 0x3e,
-	0x41, 0xa0, 0xa6, 0x01, 0x00, 0x00,
+	// 828 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0x4d, 0x6f, 0xe3, 0x54,
+	0x14, 0xad, 0x1b, 0x27, 0x4d, 0x6f, 0x6c, 0x37, 0xf3, 0xe8, 0x40, 0xc8, 0x02, 0x05, 0x0b, 0x89,
+	0x4c, 0x41, 0x95, 0x26, 0x15, 0xd5, 0xc0, 0x06, 0xb9, 0xc4, 0xb8, 0x16, 0x8e, 0x63, 0xbd, 0x38,
+	0x1a, 0xba, 0x99, 0xc8, 0x4d, 0xde, 0x54, 0x96, 0x52, 0xdb, 0x3c, 0x3b, 0xad, 0x8a, 0x58, 0x22,
+	0xb6, 0xfc, 0x04, 0xf8, 0x47, 0xfc, 0x25, 0xf4, 0xbe, 0xd2, 0xb4, 0x01, 0xb5, 0xb3, 0x3c, 0xe7,
+	0x7e, 0x9d, 0x7b, 0xf2, 0x7c, 0x03, 0x46, 0x42, 0xe7, 0xc9, 0x82, 0x1c, 0x17, 0x34, 0xaf, 0x72,
+	0xd4, 0x10, 0xc8, 0x3e, 0x81, 0x66, 0x94, 0x66, 0x57, 0x51, 0x9e, 0x5d, 0xa1, 0x2f, 0xe1, 0xa0,
+	0x24, 0xbf, 0xac, 0x48, 0x36, 0x27, 0xb3, 0x6c, 0x75, 0x7d, 0x49, 0x68, 0x47, 0xeb, 0x69, 0xfd,
+	0x3a, 0xb6, 0x14, 0x1d, 0x72, 0xd6, 0xee, 0x43, 0x23, 0x5a, 0x26, 0x77, 0x84, 0xa2, 0xcf, 0x00,
+	0xd2, 0x05, 0xc9, 0xaa, 0xf4, 0x7d, 0x2a, 0xb3, 0xf7, 0xf1, 0x06, 0x63, 0xff, 0xae, 0xc1, 0xbe,
+	0x97, 0x5c, 0x93, 0x49, 0x95, 0x54, 0x04, 0x7d, 0x0e, 0xc6, 0x7b, 0x9a, 0x5c, 0x3f, 0xe8, 0x5e,
+	0xc3, 0x2d, 0xce, 0x89, 0xd6, 0xe8, 0x15, 0xe8, 0x34, 0xbf, 0x2d, 0x3b, 0xbb, 0xbd, 0x5a, 0xbf,
+	0x35, 0x78, 0x79, 0x2c, 0x45, 0xaf, 0x7b, 0x1c, 0xe3, 0xfc, 0x16, 0xf3, 0x94, 0xee, 0x2b, 0xa8,
+	0xe1, 0xfc, 0x16, 0xd9, 0x50, 0x9f, 0x93, 0xe5, 0xb2, 0xec, 0x68, 0xbd, 0x5a, 0xdf, 0x1a, 0x18,
+	0xaa, 0x24, 0x4e, 0x97, 0x04, 0x8b, 0x90, 0xfd, 0x1a, 0x0e, 0x86, 0xa4, 0x9c, 0xd3, 0xf4, 0x92,
+	0x60, 0xb6, 0x4a, 0x59, 0x3d, 0xa9, 0xfc, 0x67, 0x68, 0xdf, 0x97, 0x94, 0x45, 0x9e, 0x95, 0xe4,
+	0xa9, 0x1a, 0xf4, 0x05, 0xe8, 0xd5, 0x5d, 0x41, 0x3a, 0xbb, 0x3d, 0xad, 0x6f, 0x0d, 0xda, 0x4a,
+	0x49, 0x98, 0x2f, 0x48, 0x7c, 0x57, 0x10, 0xcc, 0xa3, 0xf6, 0x1b, 0x30, 0x26, 0x55, 0x42, 0x2b,
+	0xa5, 0xa4, 0x0f, 0x7b, 0x05, 0x77, 0x53, 0xac, 0xd0, 0x1a, 0x58, 0xaa, 0x50, 0x98, 0x8c, 0x55,
+	0xd8, 0xf6, 0xc0, 0x94, 0x95, 0x52, 0xd0, 0x29, 0x98, 0x69, 0x96, 0x56, 0x69, 0xb2, 0x9c, 0x95,
+	0xcc, 0x1d, 0xae, 0xa9, 0x35, 0x78, 0xb1, 0x65, 0x1b, 0x36, 0x64, 0x1e, 0x47, 0xf6, 0xdf, 0x1a,
+	0xb4, 0x26, 0x15, 0x29, 0x94, 0x84, 0xd7, 0xd0, 0x48, 0xb3, 0x62, 0x55, 0x29, 0x05, 0x9f, 0xaa,
+	0x06, 0x1b, 0x49, 0xc7, 0x3e, 0xcb, 0xc0, 0x32, 0xb1, 0xfb, 0x0e, 0xea, 0x9c, 0x78, 0xd2, 0x94,
+	0x6f, 0xc0, 0xba, 0x5c, 0x55, 0x55, 0x9e, 0xcd, 0x0a, 0x4a, 0xca, 0x92, 0x2c, 0xa4, 0x3d, 0xeb,
+	0x2d, 0xcf, 0x78, 0x14, 0x9b, 0x22, 0x2b, 0x12, 0x49, 0xf6, 0x3f, 0x1a, 0xb3, 0x89, 0x4d, 0x97,
+	0xbb, 0xbe, 0x01, 0xab, 0xa0, 0xe4, 0x26, 0xcd, 0x57, 0xe5, 0x53, 0xcb, 0x9a, 0x2a, 0x51, 0x3c,
+	0xbb, 0x53, 0x30, 0xe7, 0x2b, 0x4a, 0x49, 0x56, 0xc9, 0xc2, 0xdd, 0xff, 0x75, 0x49, 0xe6, 0x89,
+	0xba, 0x1e, 0x18, 0x57, 0xec, 0xb5, 0xa6, 0xe5, 0x2c, 0xbf, 0x21, 0xb4, 0x53, 0xeb, 0x69, 0xfd,
+	0x26, 0x06, 0xc6, 0xf9, 0xe5, 0xf8, 0x86, 0x50, 0xf4, 0x15, 0xbc, 0xb8, 0x4d, 0xb3, 0x8c, 0xd0,
+	0xd9, 0x86, 0x05, 0x3a, 0xb7, 0xa0, 0x2d, 0x02, 0xfe, 0xfd, 0x8b, 0xf2, 0xc0, 0x9c, 0x16, 0x0b,
+	0x36, 0x46, 0xba, 0xbe, 0xa5, 0x4b, 0x7b, 0x96, 0x2e, 0xdb, 0x03, 0x4b, 0x35, 0x92, 0xde, 0x6c,
+	0x7b, 0xac, 0x3d, 0xc3, 0xe3, 0xa3, 0x77, 0xd0, 0x54, 0x6f, 0x13, 0xb5, 0xc1, 0x98, 0x86, 0x3f,
+	0x85, 0xe3, 0xb7, 0xe1, 0x2c, 0x1c, 0x0f, 0xdd, 0xf6, 0x0e, 0xb2, 0x00, 0x86, 0xd3, 0xd1, 0xe8,
+	0x42, 0x60, 0x0d, 0x99, 0xb0, 0xef, 0x39, 0x23, 0x57, 0xc0, 0x5d, 0x74, 0x00, 0xad, 0x28, 0x70,
+	0x2e, 0x5c, 0x2c, 0x88, 0x1a, 0xeb, 0x30, 0xf4, 0x27, 0x8c, 0x13, 0x8c, 0x7e, 0xf4, 0xa7, 0x06,
+	0x0d, 0x31, 0x19, 0x21, 0xb0, 0x54, 0xfb, 0xb3, 0x69, 0x1c, 0x8f, 0xc3, 0xf6, 0x0e, 0xe3, 0xc2,
+	0x71, 0x7c, 0xee, 0x87, 0x9e, 0xe2, 0xf8, 0x90, 0x69, 0xa4, 0x20, 0x1f, 0x32, 0xdc, 0xa8, 0xa9,
+	0x31, 0x22, 0x70, 0x7f, 0x8c, 0x15, 0xa1, 0xb3, 0xa9, 0xd8, 0xf7, 0xce, 0xd7, 0x4c, 0x1d, 0x19,
+	0xd0, 0x74, 0x14, 0x6a, 0x30, 0x74, 0xa6, 0xd0, 0xde, 0xd1, 0x5f, 0x1a, 0xe8, 0xec, 0x30, 0x6c,
+	0xae, 0x1b, 0xfb, 0x01, 0x5b, 0xf7, 0x10, 0xda, 0xee, 0x28, 0x8a, 0x2f, 0x66, 0x93, 0xc8, 0xf9,
+	0xc1, 0x15, 0x2c, 0xd7, 0xf3, 0xd6, 0x09, 0x02, 0x01, 0x37, 0x97, 0xe6, 0x44, 0x8d, 0x99, 0xe4,
+	0x04, 0xd1, 0xb9, 0x23, 0xb0, 0xce, 0xf2, 0xcf, 0xdc, 0x58, 0xc2, 0x3a, 0x0b, 0x7b, 0xce, 0x68,
+	0x24, 0x71, 0x83, 0x7b, 0xea, 0x06, 0x2a, 0xbe, 0xc7, 0x64, 0xb8, 0xd1, 0xc4, 0x0f, 0xc6, 0x52,
+	0x46, 0x73, 0xf0, 0x1b, 0xb4, 0xd8, 0x6f, 0x32, 0x21, 0xf4, 0x26, 0x9d, 0x13, 0xf4, 0x35, 0xe8,
+	0xec, 0x3e, 0xa3, 0xf5, 0x31, 0x51, 0xd7, 0xba, 0xbb, 0xc5, 0xd8, 0x3b, 0xe8, 0x7b, 0x68, 0xaa,
+	0xa3, 0x85, 0x3e, 0x51, 0xf1, 0x47, 0x97, 0xaf, 0xdb, 0xd9, 0x0e, 0x88, 0x67, 0x64, 0xef, 0x0c,
+	0x7e, 0x85, 0x16, 0x7f, 0x75, 0x72, 0xfa, 0x29, 0xd4, 0xf9, 0xc1, 0x41, 0x87, 0xf7, 0x07, 0xe1,
+	0xfe, 0x72, 0x75, 0x5f, 0x3e, 0x62, 0x55, 0x1b, 0x74, 0x02, 0x3a, 0xfb, 0x76, 0xd1, 0x47, 0xff,
+	0x71, 0x47, 0xba, 0x87, 0x0f, 0xc9, 0xf5, 0xec, 0x3f, 0x34, 0x30, 0xc5, 0xc5, 0x53, 0xe3, 0xbf,
+	0x83, 0xbd, 0x88, 0x92, 0x22, 0xa1, 0x04, 0xad, 0x47, 0x3d, 0xf8, 0x84, 0xba, 0x1f, 0x3f, 0xa6,
+	0xd7, 0x12, 0xbe, 0x85, 0x86, 0xe0, 0x3e, 0xb8, 0xf4, 0xb2, 0xc1, 0xff, 0x22, 0x4f, 0xfe, 0x0d,
+	0x00, 0x00, 0xff, 0xff, 0x81, 0xac, 0xed, 0xe9, 0x32, 0x07, 0x00, 0x00,
 }

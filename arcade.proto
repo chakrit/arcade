@@ -3,15 +3,58 @@ syntax = "proto3";
 package arcade;
 
 enum NodeType {
-    RESERVED = 0;
-    DUMMY = 1;
-    GAME = 2;
-    PLAYER = 3;
-    DISPLAY = 4;
+    UNKNOWN_NODE = 0;
+    DUMMY_NODE = 1;
+    GAME_NODE = 2;
+    PLAYER_NODE = 3;
+    DISPLAY_NODE = 4;
+}
+
+enum Button {
+    UNKNOWN_BUTTON = 0;
+    NOTHING_BUTTON = 1;
+
+    UP_BUTTON = 2;
+    DOWN_BUTTON = 3;
+    LEFT_BUTTON = 4;
+    RIGHT_BUTTON = 5;
+
+    A_BUTTON = 6;
+    B_BUTTON = 7;
+}
+
+enum Tile {
+    UNKNOWN_TILE = 0;
+
+    // standard for all games
+    EMPTY_SPACE_TILE = 1;
+    WALL_TILE = 2;
+    PLAYER_TILE = 3;
+
+    // game-specific definitions
+    ALPHA_TILE = 4;
+    BETA_TILE = 5;
+    GAMMA_TILE = 6;
+    DELTA_TILE = 7;
+    EPSILON_TILE = 8;
 }
 
 message PingPong {
     int32 sequence_number = 1;
+}
+
+message Player {
+    string identifier = 1;
+}
+
+message GameState {
+    message Row {
+        repeated Tile cells = 1;
+    }
+
+    int64 frame_number = 1;
+    repeated Row rows = 2;
+    // TODO: Player state
 }
 
 message DescribeRequest {
@@ -26,4 +69,47 @@ message DescribeResponse {
 service NodeService {
     rpc Ping (PingPong) returns (PingPong) {}
     rpc Describe (DescribeRequest) returns (DescribeResponse) {}
+}
+
+message StartRequest {
+    repeated Player players = 1;
+}
+
+message StartResponse {
+    GameState initial_state = 1;
+}
+
+message StepRequest {
+    message Input {
+        string identifier = 1;
+        Button button_pressed = 2;
+    }
+
+    repeated Input inputs = 1;
+}
+
+message StepResponse {
+    GameState previous_state = 1;
+    GameState current_state = 2;
+
+    bool game_is_over = 3;
+    string winner_identifier = 4;
+}
+
+service GameService {
+    rpc Start (StartRequest) returns (StartResponse) {}
+    rpc Step (StepRequest) returns (StepResponse) {}
+}
+
+message UpdateRequest {
+    GameState current_state = 1;
+}
+
+message UpdateResponse {
+    Button button_pressed = 1;
+}
+
+service PlayerService {
+    rpc Prepare (UpdateRequest) returns (UpdateResponse)  {}
+    rpc Update (UpdateRequest) returns (UpdateResponse)  {}
 }

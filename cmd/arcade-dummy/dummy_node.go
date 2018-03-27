@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/chakrit/arcade"
 	"context"
+
+	"github.com/chakrit/arcade"
 )
 
 type DummyNode struct {
@@ -18,6 +19,6 @@ func (node *DummyNode) Ping(ctx context.Context, pong *arcade.PingPong) (*arcade
 func (node *DummyNode) Describe(ctx context.Context, req *arcade.DescribeRequest) (*arcade.DescribeResponse, error) {
 	return &arcade.DescribeResponse{
 		Identifier: node.identifier,
-		Type:       arcade.NodeType_DUMMY,
+		Type:       arcade.NodeType_DUMMY_NODE,
 	}, nil
 }
